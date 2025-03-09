@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status dos Backends - Backend B</title>
+    <script>
+        async function atualizarStatusManual() {
+            try {
+                const response = await fetch('/atualizar-status');
+                const data = await response.json();
+                document.getElementById("status-backend-b").innerText = data["backend-ms-b"] || "Desconhecido";
+                document.getElementById("status-backend-a").innerText = data["backend-ms-a"] || "Desconhecido";
+                document.getElementById("conexao").innerText = data["conexao"] || "Desconhecido";
+            } catch (error) {
+                console.error("Erro ao atualizar status:", error);
+                document.getElementById("status-backend-b").innerText = "Erro";
+                document.getElementById("status-backend-a").innerText = "Erro";
+                document.getElementById("conexao").innerText = "Erro";
+            }
+        }
+
+        async function testarConexao() {
+            try {
+                const response = await fetch('/testar-conexao');
+                const data = await response.json();
+                document.getElementById("conexao").innerText = data.status;
+            } catch (error) {
+                console.error("Erro ao testar conexão:", error);
+                document.getElementById("conexao").innerText = "Erro ao conectar";
+            }
+        }
+
+        async function carregarStatusInicial() {
+            try {
+                const response = await fetch('/status');
+                const data = await response.json();
+                document.getElementById("status-backend-b").innerText = data["backend-ms-b"] || "Desconhecido";
+                document.getElementById("status-backend-a").innerText = data["backend-ms-a"] || "Desconhecido";
+                document.getElementById("conexao").innerText = data["conexao"] || "Erro";
+            } catch (error) {
+                console.error("Erro ao carregar status inicial:", error);
+            }
+        }
+
+        window.onload = carregarStatusInicial;
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        table {
+            width: 50%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #000;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Status dos Backends - Backend B</h2>
+    <table>
+        <tr>
+            <th>Backend B</th>
+            <th>Backend A</th>
+        </tr>
+        <tr>
+            <td id="status-backend-b">Carregando...</td>
+            <td id="status-backend-a">Carregando...</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Status da Conexão:</strong> <span id="conexao">Carregando...</span></td>
+        </tr>
+    </table>
+    <button onclick="testarConexao()">Conectar</button>
+    <button onclick="atualizarStatusManual()">Atualizar Status</button>
+</body>
+</html>
